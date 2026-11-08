@@ -1,0 +1,10 @@
+# OS files
+.DS_Store
+
+# Build artifacts
+ADBScreenshotBin
+*.app
+build/
+DerivedData/
+*.swp
+*~

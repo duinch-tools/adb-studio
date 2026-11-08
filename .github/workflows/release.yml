@@ -1,0 +1,34 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ADB Studio App
+        run: |
+          mkdir -p "ADB Studio.app/Contents/MacOS"
+          mkdir -p "ADB Studio.app/Contents/Resources"
+          swiftc -parse-as-library -O main.swift -o "ADB Studio.app/Contents/MacOS/ADB Studio"
+          cp Info.plist "ADB Studio.app/Contents/Info.plist"
+          if [ -f "Resources/AppIcon.icns" ]; then
+            cp "Resources/AppIcon.icns" "ADB Studio.app/Contents/Resources/AppIcon.icns"
+          fi
+          zip -r "ADB-Studio-macOS.zip" "ADB Studio.app"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ADB-Studio-macOS.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
