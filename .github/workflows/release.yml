@@ -18,7 +18,7 @@ jobs:
         run: |
           mkdir -p "ADB Studio.app/Contents/MacOS"
           mkdir -p "ADB Studio.app/Contents/Resources"
-          swiftc -parse-as-library -O main.swift -o "ADB Studio.app/Contents/MacOS/ADB Studio"
+          swiftc -parse-as-library -O Sources/*.swift -o "ADB Studio.app/Contents/MacOS/ADB Studio"
           cp Info.plist "ADB Studio.app/Contents/Info.plist"
           if [ -f "Resources/AppIcon.icns" ]; then
             cp "Resources/AppIcon.icns" "ADB Studio.app/Contents/Resources/AppIcon.icns"

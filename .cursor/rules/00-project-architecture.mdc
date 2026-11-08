@@ -1,0 +1,9 @@
+---
+description: Core architecture (clean + mvvm-udf), 6-Gate Execution Harness & Security rules for adb-studio
+globs:
+alwaysApply: true
+---
+
+Strictly follow `AGENTS.md`, `.agents/rules/execution-harness.md`, and `.agents/rules/security-gate.md`.
+- **Stack**: iOS / Swift (SwiftUI + Swift 6 Concurrency) | **Arch**: `clean` | **Pattern**: `mvvm-udf` | **Ref**: `nalexn/clean-architecture-swiftui`
+- **Hard File Cap**: Warn > 300 LOC, Fail > 450 LOC. Zero hardcoded secrets.

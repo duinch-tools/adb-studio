@@ -6,7 +6,7 @@ APP_NAME="ADB Studio"
 APP_BUNDLE="/Applications/${APP_NAME}.app"
 
 echo "==> Biên dịch ADB Studio (SwiftUI Native)..."
-swiftc -parse-as-library -O "$DIR/main.swift" -o "$DIR/AdbStudioBin"
+swiftc -parse-as-library -O "$DIR"/Sources/*.swift -o "$DIR/AdbStudioBin"
 
 echo "==> Đóng gói vào $APP_BUNDLE..."
 mkdir -p "$APP_BUNDLE/Contents/MacOS"

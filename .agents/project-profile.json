@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.2.0",
+  "generator": "project-pro",
+  "updatedAt": "2026-11-08T08:30:40Z",
+  "projectName": "adb-studio",
+  "stack": "ios",
+  "stackLabel": "iOS / Swift (SwiftUI + Swift 6 Concurrency)",
+  "architecture": "clean",
+  "pattern": "mvvm-udf",
+  "referenceRepo": "nalexn/clean-architecture-swiftui",
+  "referenceRepoUrl": "https://github.com/nalexn/clean-architecture-swiftui",
+  "fileLineLimits": {
+    "warn": 300,
+    "fail": 450
+  },
+  "selectedFeatures": [
+    "solid-dry",
+    "typed-errors",
+    "di-core",
+    "network-storage",
+    "ui-nav",
+    "arch-lint",
+    "testing-ci"
+  ],
+  "selectedAgentTargets": [
+    "adr-docs",
+    "agent-runtime-hooks",
+    "agents-root",
+    "claude-gemini",
+    "cursor-ide",
+    "git-security-hooks"
+  ],
+  "commands": {
+    "build": "swift build",
+    "test_all": "swift test",
+    "test_single": "swift test --filter <TargetTests>.<TestCase>",
+    "lint": "swiftlint lint --strict && swift-format lint -r Packages",
+    "sec_audit": "swift package show-dependencies"
+  }
+}

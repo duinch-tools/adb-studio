@@ -8,3 +8,17 @@ build/
 DerivedData/
 *.swp
 *~
+
+# Security & Secret Hygiene (managed by project-pro)
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+service-account*.json
