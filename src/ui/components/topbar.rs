@@ -35,7 +35,7 @@ pub fn render_topbar(
                         .map(|d| d.display_name())
                         .unwrap_or_else(|| id.clone())
                 } else {
-                    "Chưa kết nối thiết bị".to_string()
+                    "No device connected".to_string()
                 };
 
                 egui::ComboBox::from_id_salt("device_selector")
@@ -55,7 +55,7 @@ pub fn render_topbar(
 
                 if ui
                     .button(RichText::new("🔄").size(12.0))
-                    .on_hover_text("Tìm lại thiết bị ADB")
+                    .on_hover_text("Refresh ADB devices")
                     .clicked()
                 {
                     let _ = tx.send(AppMessage::RefreshDevices);

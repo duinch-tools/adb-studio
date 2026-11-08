@@ -27,7 +27,7 @@ fn test_log_level_parsing_and_order() {
 
 #[test]
 fn test_app_tab_attributes() {
-    assert_eq!(AppTab::Screenshot.short_name(), "Chụp ảnh");
-    assert_eq!(AppTab::Recording.short_name(), "Quay video");
+    assert_eq!(AppTab::Screenshot.short_name(), "Screenshot");
+    assert_eq!(AppTab::Recording.short_name(), "Recording");
     assert_eq!(AppTab::Logcat.short_name(), "Logcat");
 }

@@ -32,6 +32,8 @@ cat << 'EOF' > "$APP_BUNDLE/Contents/Info.plist"
     <string>1.0.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>NSHighResolutionCapable</key>
@@ -40,6 +42,10 @@ cat << 'EOF' > "$APP_BUNDLE/Contents/Info.plist"
 </plist>
 EOF
 
+if [ -f "$DIR/Resources/AppIcon.icns" ]; then
+    cp "$DIR/Resources/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
+fi
+
 killall "ADB Studio" 2>/dev/null || true
 cp "$DIR/target/release/adb-studio" "$APP_BUNDLE/Contents/MacOS/ADB Studio"
 chmod +x "$APP_BUNDLE/Contents/MacOS/ADB Studio"
@@ -47,9 +53,10 @@ chmod +x "$APP_BUNDLE/Contents/MacOS/ADB Studio"
 echo "==> Ad-hoc code signing for Apple Silicon macOS..."
 codesign --force --deep --sign - "$APP_BUNDLE"
 xattr -cr "$APP_BUNDLE" 2>/dev/null || true
+touch "$APP_BUNDLE"
 
 # CLI symlink
 mkdir -p "$HOME/.local/bin"
 ln -sf "$APP_BUNDLE/Contents/MacOS/ADB Studio" "$HOME/.local/bin/adb-studio"
 
-echo "==> Hoàn tất! App đã sẵn sàng khởi chạy: open -a '$APP_BUNDLE'"
+echo "==> Done! App is ready: open -a '$APP_BUNDLE'"

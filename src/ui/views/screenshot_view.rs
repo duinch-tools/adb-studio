@@ -45,7 +45,7 @@ pub fn render_screenshot_view(
                         |ui| {
                             ui.label(
                                 RichText::new(
-                                    "Chưa có ảnh chụp\nBấm nút bên dưới hoặc phím Space để chụp",
+                                    "No screenshot yet\nClick the button below or press Space to capture",
                                 )
                                 .size(13.0)
                                 .color(Theme::TEXT_SECONDARY),
@@ -60,7 +60,7 @@ pub fn render_screenshot_view(
         // Copy button if screenshot is present
         if state.last_screenshot.is_some() {
             if ui
-                .button(RichText::new("📋 Sao chép lại vào Clipboard").size(12.5))
+                .button(RichText::new("📋 Copy to Clipboard").size(12.5))
                 .clicked()
             {
                 let _ = tx.send(AppMessage::CopyScreenshotToClipboard);
@@ -70,9 +70,9 @@ pub fn render_screenshot_view(
 
         // Primary action button
         let btn_text = if state.is_capturing {
-            "⏳ Đang chụp màn hình..."
+            "⏳ Capturing screenshot..."
         } else {
-            "📸 Chụp Màn Hình (Space)"
+            "📸 Capture Screenshot (Space)"
         };
 
         let btn = egui::Button::new(
@@ -99,11 +99,11 @@ pub fn render_screenshot_view(
 
         // Options row
         ui.horizontal(|ui| {
-            ui.checkbox(&mut state.auto_copy_clipboard, "Mặc định vào Clipboard");
+            ui.checkbox(&mut state.auto_copy_clipboard, "Auto-copy to Clipboard");
             ui.add_space(14.0);
-            ui.checkbox(&mut state.auto_save_desktop, "Lưu ở Desktop");
+            ui.checkbox(&mut state.auto_save_desktop, "Save to Desktop");
             ui.add_space(14.0);
-            ui.checkbox(&mut state.auto_capture_on_launch, "Tự chụp khi mở");
+            ui.checkbox(&mut state.auto_capture_on_launch, "Capture on launch");
         });
     });
 }

@@ -17,7 +17,7 @@ pub fn render_logcat_view(
                 ui.horizontal(|ui| {
                     // Log level combo
                     ui.label(
-                        RichText::new("Mức độ:")
+                        RichText::new("Level:")
                             .size(12.0)
                             .color(Theme::TEXT_SECONDARY),
                     );
@@ -39,7 +39,7 @@ pub fn render_logcat_view(
                     ui.label(RichText::new("🔍").size(12.0));
                     ui.add(
                         egui::TextEdit::singleline(&mut state.logcat_search)
-                            .hint_text("Tìm kiếm log...")
+                            .hint_text("Search logs...")
                             .desired_width(180.0),
                     );
 
@@ -66,16 +66,16 @@ pub fn render_logcat_view(
 
                         // Pause button
                         let pause_label = if state.logcat_paused {
-                            "▶ Tiếp tục"
+                            "▶ Resume"
                         } else {
-                            "⏸ Tạm dừng"
+                            "⏸ Pause"
                         };
                         if ui.button(RichText::new(pause_label).size(12.0)).clicked() {
                             let _ = tx.send(AppMessage::ToggleLogcatPause);
                         }
 
                         // Auto-scroll checkbox
-                        ui.checkbox(&mut state.logcat_auto_scroll, "Tự cuộn");
+                        ui.checkbox(&mut state.logcat_auto_scroll, "Auto-scroll");
                     });
                 });
             });
@@ -114,7 +114,7 @@ pub fn render_logcat_view(
         ui.horizontal(|ui| {
             ui.label(
                 RichText::new(format!(
-                    "Hiển thị: {} / {} logs",
+                    "Showing: {} / {} logs",
                     filtered_logs.len(),
                     state.logs.len()
                 ))

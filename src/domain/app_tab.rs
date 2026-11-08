@@ -13,16 +13,16 @@ impl AppTab {
 
     pub fn title(&self) -> &'static str {
         match self {
-            AppTab::Screenshot => "Chụp ảnh (Screenshot)",
-            AppTab::Recording => "Quay video (Live Preview)",
+            AppTab::Screenshot => "Screenshot",
+            AppTab::Recording => "Screen Recording (Live Preview)",
             AppTab::Logcat => "Logcat Studio",
         }
     }
 
     pub fn short_name(&self) -> &'static str {
         match self {
-            AppTab::Screenshot => "Chụp ảnh",
-            AppTab::Recording => "Quay video",
+            AppTab::Screenshot => "Screenshot",
+            AppTab::Recording => "Recording",
             AppTab::Logcat => "Logcat",
         }
     }

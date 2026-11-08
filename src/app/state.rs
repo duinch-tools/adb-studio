@@ -44,7 +44,7 @@ impl Default for AppState {
             devices: Vec::new(),
             selected_device_id: None,
             active_tab: AppTab::Screenshot,
-            status_message: "Khởi tạo ADB Studio...".to_string(),
+            status_message: "Initializing ADB Studio...".to_string(),
             is_error: false,
 
             last_screenshot: None,

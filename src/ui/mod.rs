@@ -32,6 +32,11 @@ impl AdbStudioApp {
 
 impl eframe::App for AdbStudioApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Enforce dark theme consistently regardless of OS system mode
+        if !ctx.style().visuals.dark_mode {
+            theme::Theme::apply_visuals(ctx);
+        }
+
         // Poll incoming background channel events
         self.controller.poll_updates(&mut self.state);
 

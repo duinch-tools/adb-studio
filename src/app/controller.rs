@@ -50,7 +50,7 @@ impl AppController {
         state.adb_path = AdbCli::find_adb();
         if state.adb_path.is_none() {
             state.status_message =
-                "Không tìm thấy lệnh adb! Hãy cài đặt Android platform-tools".to_string();
+                "ADB command not found! Please install Android platform-tools".to_string();
             state.is_error = true;
         } else {
             self.refresh_devices(state);
@@ -62,7 +62,7 @@ impl AppController {
             return;
         };
         let tx = self.msg_tx.clone();
-        state.status_message = "Đang tìm thiết bị ADB...".to_string();
+        state.status_message = "Searching for ADB devices...".to_string();
         state.is_error = false;
 
         std::thread::spawn(move || {
@@ -76,13 +76,13 @@ impl AppController {
             return;
         };
         let Some(dev_id) = state.selected_device_id.clone() else {
-            state.status_message = "Chưa chọn thiết bị Android".to_string();
+            state.status_message = "No Android device selected".to_string();
             state.is_error = true;
             return;
         };
 
         state.is_capturing = true;
-        state.status_message = "Đang chụp màn hình...".to_string();
+        state.status_message = "Capturing screenshot...".to_string();
         let tx = self.msg_tx.clone();
 
         std::thread::spawn(move || {
@@ -95,7 +95,7 @@ impl AppController {
         if self.live_preview.is_active() {
             self.live_preview.stop();
             state.live_preview_active = false;
-            state.status_message = "Đã dừng Live Preview".to_string();
+            state.status_message = "Live Preview stopped".to_string();
         } else {
             let Some(adb) = state.adb_path.clone() else {
                 return;
@@ -106,7 +106,7 @@ impl AppController {
             self.live_preview
                 .start(adb, dev_id, self.preview_tx.clone());
             state.live_preview_active = true;
-            state.status_message = "Live Preview đang phát trực tiếp".to_string();
+            state.status_message = "Live Preview streaming".to_string();
         }
     }
 
@@ -124,14 +124,14 @@ impl AppController {
                     state.is_recording = false;
                     state.recording_start = None;
                     state.last_recorded_file = Some(path.clone());
-                    state.status_message = format!("Đã lưu video quay tại: {}", path.display());
+                    state.status_message = format!("Screen recording saved to: {}", path.display());
                     // Stop live preview if it was only started for recording
                     if !state.live_preview_active {
                         self.live_preview.stop();
                     }
                 }
                 Err(e) => {
-                    state.status_message = format!("Lỗi khi dừng quay: {e}");
+                    state.status_message = format!("Error stopping recording: {e}");
                     state.is_error = true;
                 }
             }
@@ -141,7 +141,7 @@ impl AppController {
                 Ok(_) => {
                     state.is_recording = true;
                     state.recording_start = Some(chrono::Local::now());
-                    state.status_message = "Đang quay màn hình Android (REC)...".to_string();
+                    state.status_message = "Recording Android screen (REC)...".to_string();
                     // Automatically turn on Live Preview so the user can see what's being recorded!
                     if !self.live_preview.is_active() {
                         self.live_preview
@@ -150,7 +150,7 @@ impl AppController {
                     }
                 }
                 Err(e) => {
-                    state.status_message = format!("Lỗi khởi động quay màn hình: {e}");
+                    state.status_message = format!("Failed to start screen recording: {e}");
                     state.is_error = true;
                 }
             }
@@ -204,7 +204,8 @@ impl AppController {
                     if state.selected_device_id.is_none() && !state.devices.is_empty() {
                         state.selected_device_id = Some(state.devices[0].id.clone());
                     }
-                    state.status_message = format!("Đã kết nối {} thiết bị", state.devices.len());
+                    state.status_message =
+                        format!("Connected to {} device(s)", state.devices.len());
                     state.is_error = false;
                     if state.auto_capture_on_launch
                         && state.last_screenshot.is_none()
@@ -238,7 +239,7 @@ impl AppController {
                                 ClipboardAdapter::copy_rgba_image(img.width, img.height, &img.rgba);
                         }
                         state.status_message =
-                            "Đã chụp màn hình & sao chép vào Clipboard".to_string();
+                            "Screenshot captured & copied to Clipboard".to_string();
                         state.is_error = false;
                         state.last_screenshot = Some(img);
                     }
@@ -251,7 +252,7 @@ impl AppController {
             AppMessage::CopyScreenshotToClipboard => {
                 if let Some(ref img) = state.last_screenshot {
                     let _ = ClipboardAdapter::copy_rgba_image(img.width, img.height, &img.rgba);
-                    state.status_message = "Đã sao chép ảnh vào Clipboard!".to_string();
+                    state.status_message = "Screenshot copied to Clipboard!".to_string();
                 }
             }
             AppMessage::ToggleLivePreview => self.toggle_live_preview(state),
@@ -288,7 +289,7 @@ impl AppController {
                     .collect::<Vec<_>>()
                     .join("\n");
                 let _ = ClipboardAdapter::copy_text(&text);
-                state.status_message = "Đã sao chép toàn bộ logs vào Clipboard!".to_string();
+                state.status_message = "All logs copied to Clipboard!".to_string();
             }
         }
     }

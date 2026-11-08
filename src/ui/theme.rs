@@ -32,6 +32,11 @@ impl Theme {
         visuals.panel_fill = Self::BG_VOID;
         visuals.window_fill = Self::BG_VOID;
         visuals.override_text_color = Some(Self::TEXT_PRIMARY);
+        visuals.widgets.noninteractive.bg_fill = Self::BG_PANEL;
+        visuals.widgets.inactive.bg_fill = Self::BG_CARD;
+        visuals.widgets.hovered.bg_fill = Self::BORDER;
+        visuals.widgets.active.bg_fill = Self::ACCENT;
+        visuals.widgets.open.bg_fill = Self::BG_CARD;
         ctx.set_visuals(visuals);
     }
 }

@@ -47,9 +47,9 @@ pub fn render_recorder_view(
                                 } else {
                                     "00:00".to_string()
                                 };
-                                ui.label(RichText::new(format!("🔴 REC [{elapsed}] - ĐANG GHI HÌNH")).color(Theme::ACCENT_REC).strong());
+                                ui.label(RichText::new(format!("🔴 REC [{elapsed}] - RECORDING")).color(Theme::ACCENT_REC).strong());
                             } else {
-                                ui.label(RichText::new("🟢 LIVE PREVIEW TRỰC TIẾP").color(Color32::from_rgb(89, 198, 134)).size(11.5));
+                                ui.label(RichText::new("🟢 LIVE PREVIEW").color(Color32::from_rgb(89, 198, 134)).size(11.5));
                             }
                         });
 
@@ -61,7 +61,7 @@ pub fn render_recorder_view(
                         Layout::centered_and_justified(egui::Direction::TopDown),
                         |ui| {
                             ui.label(
-                                RichText::new("Chưa bật Live Preview\nBấm nút bên dưới để bắt đầu xem trực tiếp hoặc quay video")
+                                RichText::new("Live Preview is off\nClick below to start live preview or record video")
                                     .size(13.0)
                                     .color(Theme::TEXT_SECONDARY),
                             );
@@ -76,9 +76,9 @@ pub fn render_recorder_view(
         ui.horizontal(|ui| {
             // Live Preview Toggle
             let preview_btn_text = if state.live_preview_active {
-                "⏹ Tắt Live Preview"
+                "⏹ Stop Live Preview"
             } else {
-                "👁 Bật Live Preview"
+                "👁 Start Live Preview"
             };
             if ui.button(RichText::new(preview_btn_text).size(13.0)).clicked() {
                 let _ = tx.send(AppMessage::ToggleLivePreview);
@@ -88,9 +88,9 @@ pub fn render_recorder_view(
 
             // Record Button
             let (rec_text, rec_color) = if state.is_recording {
-                ("⏹ DỪNG QUAY & LƯU MP4", Theme::ACCENT_REC)
+                ("⏹ STOP RECORDING & SAVE MP4", Theme::ACCENT_REC)
             } else {
-                ("🔴 BẮT ĐẦU QUAY VIDEO (REC)", Theme::ACCENT)
+                ("🔴 START RECORDING (REC)", Theme::ACCENT)
             };
 
             let rec_btn = egui::Button::new(RichText::new(rec_text).size(14.0).color(Color32::WHITE).strong())
@@ -107,19 +107,19 @@ pub fn render_recorder_view(
 
         // Quality settings & info
         ui.horizontal(|ui| {
-            ui.label(RichText::new("Chất lượng:").size(12.0).color(Theme::TEXT_SECONDARY));
+            ui.label(RichText::new("Bitrate:").size(12.0).color(Theme::TEXT_SECONDARY));
             egui::ComboBox::from_id_salt("bitrate_select")
                 .selected_text(format!("{} Mbps", state.recording_bitrate_mbps))
                 .show_ui(ui, |ui| {
-                    ui.selectable_value(&mut state.recording_bitrate_mbps, 6, "6 Mbps (Nhẹ)");
-                    ui.selectable_value(&mut state.recording_bitrate_mbps, 12, "12 Mbps (Chuẩn)");
-                    ui.selectable_value(&mut state.recording_bitrate_mbps, 16, "16 Mbps (Nét)");
-                    ui.selectable_value(&mut state.recording_bitrate_mbps, 24, "24 Mbps (Rất nét)");
+                    ui.selectable_value(&mut state.recording_bitrate_mbps, 6, "6 Mbps (Low)");
+                    ui.selectable_value(&mut state.recording_bitrate_mbps, 12, "12 Mbps (Standard)");
+                    ui.selectable_value(&mut state.recording_bitrate_mbps, 16, "16 Mbps (High)");
+                    ui.selectable_value(&mut state.recording_bitrate_mbps, 24, "24 Mbps (Ultra)");
                 });
 
             if let Some(ref path) = state.last_recorded_file {
                 ui.add_space(14.0);
-                ui.label(RichText::new(format!("File vừa lưu: {}", path.file_name().and_then(|n| n.to_str()).unwrap_or(""))).size(11.5).color(Color32::from_rgb(89, 198, 134)));
+                ui.label(RichText::new(format!("Saved: {}", path.file_name().and_then(|n| n.to_str()).unwrap_or(""))).size(11.5).color(Color32::from_rgb(89, 198, 134)));
             }
         });
     });
