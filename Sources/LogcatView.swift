@@ -133,7 +133,7 @@ struct LogcatTabView: View {
                     .padding(.vertical, 4)
                 }
                 .background(AppColors.panelBg)
-                .onChange(of: displayLogs.count) {
+                .onChange(of: displayLogs.count) { _ in
                     if state.autoScrollLogcat, let last = displayLogs.last {
                         proxy.scrollTo(last.id, anchor: .bottom)
                     }

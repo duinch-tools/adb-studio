@@ -22,3 +22,4 @@ DerivedData/
 *.jks
 *.keystore
 service-account*.json
+.build/
