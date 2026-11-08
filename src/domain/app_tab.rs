@@ -29,9 +29,9 @@ impl AppTab {
 
     pub fn icon(&self) -> &'static str {
         match self {
-            AppTab::Screenshot => "📸",
+            AppTab::Screenshot => "📷",
             AppTab::Recording => "🎥",
-            AppTab::Logcat => "📜",
+            AppTab::Logcat => "☰",
         }
     }
 }

@@ -16,6 +16,7 @@ pub struct AdbStudioApp {
 
 impl AdbStudioApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        theme::Theme::apply_fonts(&cc.egui_ctx);
         theme::Theme::apply_visuals(&cc.egui_ctx);
         let mut state = AppState::default();
         let mut controller = AppController::new();
@@ -46,37 +47,57 @@ impl eframe::App for AdbStudioApp {
         }
 
         // Top bar
-        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            components::render_topbar(ui, &mut self.state, &self.controller.msg_tx);
-        });
+        egui::TopBottomPanel::top("top_panel")
+            .frame(
+                egui::Frame::new()
+                    .fill(theme::Theme::BG_PANEL)
+                    .inner_margin(egui::Margin::symmetric(16, 10))
+                    .stroke(egui::Stroke::new(1.0_f32, theme::Theme::BORDER)),
+            )
+            .show(ctx, |ui| {
+                components::render_topbar(ui, &mut self.state, &self.controller.msg_tx);
+            });
 
         // Footer
-        egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
-            components::render_footer(ui, &self.state);
-        });
+        egui::TopBottomPanel::bottom("bottom_panel")
+            .frame(
+                egui::Frame::new()
+                    .fill(theme::Theme::BG_PANEL)
+                    .inner_margin(egui::Margin::symmetric(16, 7))
+                    .stroke(egui::Stroke::new(1.0_f32, theme::Theme::BORDER)),
+            )
+            .show(ctx, |ui| {
+                components::render_footer(ui, &self.state);
+            });
 
         // Central content panel
-        egui::CentralPanel::default().show(ctx, |ui| match self.state.active_tab {
-            AppTab::Screenshot => {
-                views::render_screenshot_view(
-                    ui,
-                    &mut self.state,
-                    &mut self.screenshot_texture,
-                    &self.controller.msg_tx,
-                );
-            }
-            AppTab::Recording => {
-                views::render_recorder_view(
-                    ui,
-                    &mut self.state,
-                    &mut self.preview_texture,
-                    &self.controller.msg_tx,
-                );
-            }
-            AppTab::Logcat => {
-                views::render_logcat_view(ui, &mut self.state, &self.controller.msg_tx);
-            }
-        });
+        egui::CentralPanel::default()
+            .frame(
+                egui::Frame::new()
+                    .fill(theme::Theme::BG_VOID)
+                    .inner_margin(egui::Margin::symmetric(18, 14)),
+            )
+            .show(ctx, |ui| match self.state.active_tab {
+                AppTab::Screenshot => {
+                    views::render_screenshot_view(
+                        ui,
+                        &mut self.state,
+                        &mut self.screenshot_texture,
+                        &self.controller.msg_tx,
+                    );
+                }
+                AppTab::Recording => {
+                    views::render_recorder_view(
+                        ui,
+                        &mut self.state,
+                        &mut self.preview_texture,
+                        &self.controller.msg_tx,
+                    );
+                }
+                AppTab::Logcat => {
+                    views::render_logcat_view(ui, &mut self.state, &self.controller.msg_tx);
+                }
+            });
 
         // Request continuous repaint if live preview or recording or logcat is streaming
         if self.state.live_preview_active

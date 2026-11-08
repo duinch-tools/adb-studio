@@ -38,6 +38,8 @@ cat << 'EOF' > "$APP_BUNDLE/Contents/Info.plist"
     <string>13.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>NSRequiresAquaSystemAppearance</key>
+    <false/>
 </dict>
 </plist>
 EOF

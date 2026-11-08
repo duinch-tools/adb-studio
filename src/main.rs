@@ -27,8 +27,8 @@ fn main() -> eframe::Result<()> {
         .expect("Failed to initialize tokio runtime");
 
     let mut viewport = eframe::egui::ViewportBuilder::default()
-        .with_inner_size(Vec2::new(780.0, 680.0))
-        .with_min_inner_size(Vec2::new(560.0, 480.0))
+        .with_inner_size(Vec2::new(820.0, 700.0))
+        .with_min_inner_size(Vec2::new(680.0, 520.0))
         .with_title("ADB Studio — Android Companion");
 
     if let Some(icon) = load_app_icon() {
