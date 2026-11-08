@@ -1,4 +1,4 @@
 # adb-studio — AI Coding & Security Rules
 
 Strictly follow `AGENTS.md`, `.agents/rules/execution-harness.md`, and `.agents/rules/security-gate.md`.
-Architecture: `clean` | Pattern: `mvvm-udf` | Reference Repo: `nalexn/clean-architecture-swiftui` | Max File Lines: `450`.
+Architecture: `clean` | Pattern: `mvi` | Reference Repo: `emilk/egui` | Max File Lines: `450`.

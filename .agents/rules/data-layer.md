@@ -1,5 +1,5 @@
 # Data & Infrastructure Layer Guardrails
 
-1. **Model Isolation**: Keep `*Dto` (serialization annotations) in `remote/` and `*Entity` (ORM/SQL annotations) in `local/`. Never leak them outside `data/`.
-2. **Stateless Mappers**: Implement pure transformation extensions/functions (`toDomain()`, `toEntity()`) tested with unit tests.
-3. **Error Translation**: Wrap external I/O calls in a boundary translator that maps HTTP/DB failures into typed `DomainError` (always rethrowing coroutine/async cancellation).
+1. Keep network, persistence, platform SDK, and serialization dependencies in adapters or infrastructure modules.
+2. Use DTO/entity types only when they represent a real wire/database boundary; map at that boundary and keep domain types independent.
+3. Translate I/O failures into meaningful errors at adapter boundaries. Preserve error sources and propagate cancellation rather than swallowing it.

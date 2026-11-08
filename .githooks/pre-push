@@ -12,21 +12,21 @@ if command -v gitleaks >/dev/null 2>&1; then
   gitleaks detect --source "$ROOT_DIR" --redact --no-banner
 fi
 echo "[pre-push] 2/4 Checking dependency vulnerabilities..."
-if [ -x "swift" ] || command -v "swift" >/dev/null 2>&1; then
-  swift package show-dependencies || { echo "[pre-push] High-severity dependency issue found." >&2; exit 1; }
+if [ -x "cargo" ] || command -v "cargo" >/dev/null 2>&1; then
+  cargo audit || { echo "[pre-push] High-severity dependency issue found." >&2; exit 1; }
 else
-  echo "[pre-push] (Skipped `swift package show-dependencies` — `swift` not in PATH)"
+  echo "[pre-push] (Skipped `cargo audit` — `cargo` not in PATH)"
 fi
 echo "[pre-push] 3/4 Running lint & static typecheck..."
-if [ -x "swiftlint" ] || command -v "swiftlint" >/dev/null 2>&1; then
-  swiftlint lint --strict && swift-format lint -r Packages
+if [ -x "cargo" ] || command -v "cargo" >/dev/null 2>&1; then
+  cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings
 else
-  echo "[pre-push] (Skipped `swiftlint lint --strict && swift-format lint -r Packages` — `swiftlint` not in PATH)"
+  echo "[pre-push] (Skipped `cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings` — `cargo` not in PATH)"
 fi
 echo "[pre-push] 4/4 Running unit test suite..."
-if [ -x "swift" ] || command -v "swift" >/dev/null 2>&1; then
-  swift test
+if [ -x "cargo" ] || command -v "cargo" >/dev/null 2>&1; then
+  cargo test --workspace
 else
-  echo "[pre-push] (Skipped `swift test` — `swift` not in PATH)"
+  echo "[pre-push] (Skipped `cargo test --workspace` — `cargo` not in PATH)"
 fi
 echo "[pre-push] All security, architecture, lint, and test gates PASSED."

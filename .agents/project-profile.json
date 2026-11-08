@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.2.0",
   "generator": "project-pro",
-  "updatedAt": "2026-11-08T08:30:40Z",
+  "updatedAt": "2026-11-08T08:36:31Z",
   "projectName": "adb-studio",
-  "stack": "ios",
-  "stackLabel": "iOS / Swift (SwiftUI + Swift 6 Concurrency)",
+  "stack": "rust",
+  "stackLabel": "Rust (Cargo Workspace / Cross-Platform GUI & Core)",
   "architecture": "clean",
-  "pattern": "mvvm-udf",
-  "referenceRepo": "nalexn/clean-architecture-swiftui",
-  "referenceRepoUrl": "https://github.com/nalexn/clean-architecture-swiftui",
+  "pattern": "mvi",
+  "referenceRepo": "emilk/egui",
+  "referenceRepoUrl": "https://github.com/emilk/egui",
   "fileLineLimits": {
     "warn": 300,
     "fail": 450
@@ -31,10 +31,10 @@
     "git-security-hooks"
   ],
   "commands": {
-    "build": "swift build",
-    "test_all": "swift test",
-    "test_single": "swift test --filter <TargetTests>.<TestCase>",
-    "lint": "swiftlint lint --strict && swift-format lint -r Packages",
-    "sec_audit": "swift package show-dependencies"
+    "build": "cargo build --workspace",
+    "test_all": "cargo test --workspace",
+    "test_single": "cargo test -p <crate> -- <test_name>",
+    "lint": "cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings",
+    "sec_audit": "cargo audit"
   }
 }

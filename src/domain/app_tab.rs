@@ -1,0 +1,37 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub enum AppTab {
+    #[default]
+    Screenshot,
+    Recording,
+    Logcat,
+}
+
+impl AppTab {
+    pub const ALL: [AppTab; 3] = [AppTab::Screenshot, AppTab::Recording, AppTab::Logcat];
+
+    pub fn title(&self) -> &'static str {
+        match self {
+            AppTab::Screenshot => "Chụp ảnh (Screenshot)",
+            AppTab::Recording => "Quay video (Live Preview)",
+            AppTab::Logcat => "Logcat Studio",
+        }
+    }
+
+    pub fn short_name(&self) -> &'static str {
+        match self {
+            AppTab::Screenshot => "Chụp ảnh",
+            AppTab::Recording => "Quay video",
+            AppTab::Logcat => "Logcat",
+        }
+    }
+
+    pub fn icon(&self) -> &'static str {
+        match self {
+            AppTab::Screenshot => "📸",
+            AppTab::Recording => "🎥",
+            AppTab::Logcat => "📜",
+        }
+    }
+}

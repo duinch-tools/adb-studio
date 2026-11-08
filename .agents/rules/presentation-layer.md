@@ -1,5 +1,5 @@
-# Presentation Layer Guardrails (`mvvm-udf`)
+# Presentation Layer Guardrails (`mvi`)
 
-1. **Unidirectional Data Flow (UDF)**: Views observe immutable `Sealed UiState` and emit user `Intent` / action callbacks upward.
-2. **Dumb Previewable Views**: Pass state slices and event lambdas into UI components (not whole ViewModels/Stores). Split sub-components into `components/` when a screen passes ~200 LOC.
-3. **No Framework Leaks in State Holders**: State holders (`ViewModel`, `BLoC`, `Reducer`, `Store`) never hold UI widget, `Context`, `BuildContext`, or DOM references.
+1. Keep UI frameworks and platform APIs outside domain modules.
+2. Choose state/message/update patterns that fit the UI framework; use enums and exhaustive matching where they clarify valid states. Do not force a sealed UI-state abstraction onto simple applications.
+3. Keep platform-specific code behind target configuration or adapter boundaries, and verify each declared target in CI.

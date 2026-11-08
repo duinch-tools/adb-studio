@@ -3,30 +3,29 @@
 > Managed by `project-pro` (`.agents/project-profile.json`). Every coding task MUST follow the 6-Gate Execution Harness.
 
 ## 1. Architectural Profile
-- **Stack**: iOS / Swift (SwiftUI + Swift 6 Concurrency)
-- **Architecture**: `clean` | **Flow / State Pattern**: `mvvm-udf`
-- **Gold-Standard Reference Repo**: [`nalexn/clean-architecture-swiftui`](https://github.com/nalexn/clean-architecture-swiftui) — **consult & adapt patterns from this repo instead of inventing custom structures.**
+- **Stack**: Rust (Cargo Workspace / Cross-Platform GUI & Core)
+- **Architecture**: `clean` | **Flow / State Pattern**: `mvi`
+- **Gold-Standard Reference Repo**: [`emilk/egui`](https://github.com/emilk/egui) — **consult & adapt patterns from this repo instead of inventing custom structures.**
 - **Enabled Capabilities**: `solid-dry`, `typed-errors`, `di-core`, `network-storage`, `ui-nav`, `arch-lint`, `testing-ci`
 
 ## 2. Canonical Commands
-- **Build**: `swift build`
-- **Run All Tests**: `swift test`
-- **Run Single Test**: `swift test --filter <TargetTests>.<TestCase>`
-- **Lint & Typecheck**: `swiftlint lint --strict && swift-format lint -r Packages`
-- **Security Audit**: `swift package show-dependencies`
+- **Build**: `cargo build --workspace`
+- **Run All Tests**: `cargo test --workspace`
+- **Run Single Test**: `cargo test -p <crate> -- <test_name>`
+- **Lint & Typecheck**: `cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings`
+- **Security Audit**: `cargo audit`
 
 ## 3. Layer & Module Dependency Rules
-- **Dependency Rule**: `Presentation/Entrypoints -> Domain <- Data/Adapters`.
-- **Domain Layer**: 100% pure language types. ZERO imports from UI frameworks, HTTP clients, ORMs, or Data/Presentation packages.
-- **Data Layer**: Owns wire `*Dto` & DB `*Entity` models, implements Domain repository ports, maps errors to typed `DomainError`.
-- **Presentation Layer**: Stateless declarative UI + framework-free State Holder (`Sealed UiState`, `Intent`/`Event`, `Effect`).
-- **Boundary Enforcement**: Local Swift Package Manager (Package.swift target dependencies) + SwiftLint
+- **Dependency Rule**: Keep domain crates/modules independent from UI, transport, database, and runtime frameworks.
+- **Rust Modeling**: Prefer ownership-based APIs, enums/newtypes, traits at real boundaries, and `Result<T, E>`; do not impose DTO/Entity or sealed UI-state patterns by default.
+- **Platform Contract**: Build/test Linux, macOS, and Windows in CI; add Android, iOS, WebAssembly, or embedded targets only when declared and provisioned with their SDK/linker.
+- **Boundary Enforcement**: Cargo Workspace crate isolation (pure domain crate, framework adapters, app entrypoint) + cargo-deny when dependency policy requires it
 
 ## 4. Mandatory 6-Gate Execution & Behavioral Guardrails
 1. **Think & Ground (`karpathy-skills`)**: Read `.agents/CODEBASE_MAP.md`, `.agents/memory/lessons.md`, and `referenceRepo` before coding. Surface hidden assumptions; push back on unsafe anti-patterns; write `.agents/memory/active-plan.md` for > 3-file tasks.
 2. **Surgical & Bounded Files**: Touch ONLY lines/files required. **1 File = 1 Primary Responsibility** (`> 300 LOC` = WARN, `> 450 LOC` = FAIL).
-3. **Disciplined Coding (`obra/superpowers`)**: Build Inside-Out (`Domain -> Data -> State -> UI`) using the layer-specific models and state holder. For bugs, trace **Root Cause** + **3-Strike Stop** (if 3 fixes fail, STOP & re-evaluate architecture). Zero unfinished stubs, zero dead code.
-4. **SOLID & Anti-False-DRY**: Separate `*Dto`, `*Entity`, `Domain`, and `*UiState` models. Sealed states over boolean soup (`isLoading && isError` banned). Guard clauses (`<= 3` indent levels), immutable by default.
+3. **Disciplined Coding (`obra/superpowers`)**: Build from domain types and behavior outward; use Rust-native adapters and UI state only where the project needs them. For bugs, trace **Root Cause** + **3-Strike Stop** (if 3 fixes fail, STOP & re-evaluate architecture). Zero unfinished stubs, zero dead code.
+4. **SOLID & Anti-False-DRY**: Use ownership, borrowing, enums, and traits to model invariants; introduce wire/database models only at real boundaries. Keep state types as simple as the UI requires. Guard clauses (`<= 3` indent levels), immutable by default.
 5. **Security & Paranoid Review (`gstack`)**: Zero hardcoded secrets, parameterized SQL, redacted logs, check race conditions/N+1/pagination bounds. Never bypass Git hooks with `--no-verify`.
 6. **Self-Healing & Terse Delivery (`caveman`)**: Run `Single Test` -> `Lint/Typecheck` -> `audit` until green; log non-obvious pitfalls to `.agents/memory/lessons.md`; report concisely with file links.
 

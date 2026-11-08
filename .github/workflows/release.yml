@@ -1,4 +1,4 @@
-name: Build and Release
+name: Release Matrix
 
 on:
   push:
@@ -6,29 +6,79 @@ on:
       - 'v*.*.*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  build-macos:
-    runs-on: macos-latest
-    permissions:
-      contents: write
+  build:
+    name: Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: adb-studio-macos-arm64.tar.gz
+          - os: macos-13
+            target: x86_64-apple-darwin
+            artifact_name: adb-studio-macos-x64.tar.gz
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact_name: adb-studio-linux-x86_64.tar.gz
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: adb-studio-windows-x64.zip
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build ADB Studio App
+      - name: Install Linux GUI Dependencies
+        if: runner.os == 'Linux'
         run: |
-          mkdir -p "ADB Studio.app/Contents/MacOS"
-          mkdir -p "ADB Studio.app/Contents/Resources"
-          swiftc -parse-as-library -O Sources/*.swift -o "ADB Studio.app/Contents/MacOS/ADB Studio"
-          cp Info.plist "ADB Studio.app/Contents/Info.plist"
-          if [ -f "Resources/AppIcon.icns" ]; then
-            cp "Resources/AppIcon.icns" "ADB Studio.app/Contents/Resources/AppIcon.icns"
-          fi
-          zip -r "ADB-Studio-macOS.zip" "ADB Studio.app"
+          sudo apt-get update
+          sudo apt-get install -y libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev libfontconfig1-dev
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+      - name: Build Release Binary
+        run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Create Release
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar -czvf ../../../${{ matrix.artifact_name }} adb-studio
+          cd ../../..
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path target/${{ matrix.target }}/release/adb-studio.exe -DestinationPath ${{ matrix.artifact_name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets/
+      - name: Prepare Assets
+        run: |
+          mkdir -p final-assets
+          find release-assets/ -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec mv {} final-assets/ \;
+          ls -la final-assets/
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ADB-Studio-macOS.zip
+          files: final-assets/*
           draft: false
           prerelease: false
           generate_release_notes: true
